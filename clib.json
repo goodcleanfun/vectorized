@@ -2,7 +2,7 @@
   "name": "vector",
   "version": "0.1.0",
   "repo": "goodcleanfun/vector",
-  "description": "",
+  "description": "Generic vectors in C",
   "keywords": ["vector", "array", "generic"],
   "license": "MIT",
   "src": ["vector.h"]
