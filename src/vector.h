@@ -2,6 +2,7 @@
 #define VECTOR_H
 
 #include <stdio.h>
+#include <stdbool.h>
 
 #define DEFAULT_VECTOR_SIZE 8
 
