@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <math.h>
+#include <string.h>
 #include "vector.h"
 
 #define ks_lt_index(a, b) ((a).value < (b).value)
