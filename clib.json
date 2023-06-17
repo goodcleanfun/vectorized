@@ -5,5 +5,5 @@
   "description": "Generic vectors in C",
   "keywords": ["vector", "array", "generic"],
   "license": "MIT",
-  "src": ["vector.h"]
+  "src": ["src/vector.h", "src/vector_math.h"]
 }
