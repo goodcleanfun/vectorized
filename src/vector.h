@@ -4,8 +4,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <math.h>
 
 #include "ksort/ksort.h"
+
+#define ks_lt_index(a, b) ((a).value < (b).value)
 
 #define DEFAULT_VECTOR_SIZE 8
 
