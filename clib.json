@@ -5,5 +5,8 @@
   "description": "Generic vectors in C",
   "keywords": ["vector", "array", "generic"],
   "license": "MIT",
+  "dependencies": {
+    "goodcleanfun/ksort": "*"
+  },
   "src": ["src/vector.h"]
 }
