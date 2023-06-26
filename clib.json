@@ -8,5 +8,5 @@
   "dependencies": {
     "goodcleanfun/ksort": "*"
   },
-  "src": ["src/vector.h"]
+  "src": ["src/vector.h", "src/numeric.h"]
 }
