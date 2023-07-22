@@ -58,20 +58,20 @@ VECTOR_NUMERIC(float_array, float, float, fabsf)
         return vector;                                                                                  \
     }                                                                                                   \
                                                                                                         \
-    static inline bool name##_resize_fill_zeros(name *self, size_t n) {                             \
+    static inline bool name##_resize_fill_zeros(name *self, size_t n) {                                 \
         size_t old_n = self->n;                                                                         \
         bool ret = name##_resize(self, n);                                                              \
         if (ret && n > old_n) {                                                                         \
-            memset(self->a + old_n, 0, (n - old_n) * sizeof(type));                                \
+            memset(self->a + old_n, 0, (n - old_n) * sizeof(type));                                     \
         }                                                                                               \
         return ret;                                                                                     \
     }                                                                                                   \
                                                                                                         \
-    static inline bool name##_resize_aligned_fill_zeros(name *self, size_t n, size_t alignment) {   \
+    static inline bool name##_resize_aligned_fill_zeros(name *self, size_t n, size_t alignment) {       \
         size_t old_n = self->n;                                                                         \
         bool ret = name##_resize_aligned(self, n, alignment);                                           \
         if (ret && n > old_n) {                                                                         \
-            memset(self->a + old_n, 0, (n - old_n) * sizeof(type));                                \
+            memset(self->a + old_n, 0, (n - old_n) * sizeof(type));                                     \
         }                                                                                               \
         return ret;                                                                                     \
     }                                                                                                   \
@@ -245,7 +245,7 @@ VECTOR_NUMERIC(float_array, float, float, fabsf)
         }                                                                                               \
     }                                                                                                   \
                                                                                                         \
-    static inline void name##_add_array_times_scalar(type *a1, const type *a2, double v, size_t n) {    \
+    static inline void name##_add_array_scaled(type *a1, const type *a2, double v, size_t n) {          \
         for (size_t i = 0; i < n; i++) {                                                                \
             a1[i] += a2[i] * v;                                                                         \
         }                                                                                               \
@@ -258,7 +258,7 @@ VECTOR_NUMERIC(float_array, float, float, fabsf)
     }                                                                                                   \
                                                                                                         \
                                                                                                         \
-    static inline void name##_sub_array_times_scalar(type *a1, const type *a2, double v, size_t n) {    \
+    static inline void name##_sub_array_scaled(type *a1, const type *a2, double v, size_t n) {          \
         for (size_t i = 0; i < n; i++) {                                                                \
             a1[i] -= a2[i] * v;                                                                         \
         }                                                                                               \
@@ -270,7 +270,7 @@ VECTOR_NUMERIC(float_array, float, float, fabsf)
         }                                                                                               \
     }                                                                                                   \
                                                                                                         \
-    static inline void name##_mul_array_times_scalar(type *a1, const type *a2, double v, size_t n) {    \
+    static inline void name##_mul_array_scaled(type *a1, const type *a2, double v, size_t n) {          \
         for (size_t i = 0; i < n; i++) {                                                                \
             a1[i] *= a2[i] * v;                                                                         \
         }                                                                                               \
@@ -282,7 +282,7 @@ VECTOR_NUMERIC(float_array, float, float, fabsf)
         }                                                                                               \
     }                                                                                                   \
                                                                                                         \
-    static inline void name##_div_array_times_scalar(type *a1, const type *a2, double v, size_t n) {    \
+    static inline void name##_div_array_scaled(type *a1, const type *a2, double v, size_t n) {          \
         for (size_t i = 0; i < n; i++) {                                                                \
             a1[i] /= a2[i] * v;                                                                         \
         }                                                                                               \
