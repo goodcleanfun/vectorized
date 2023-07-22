@@ -6,7 +6,7 @@
   "keywords": ["vector", "array", "generic"],
   "license": "MIT",
   "dependencies": {
-    "goodcleanfun/ksort": "*"
+    "goodcleanfun/sorting": "*"
   },
   "src": ["src/vector.h", "src/numeric.h"]
 }

@@ -3,23 +3,16 @@
 /*
 vector/numeric.h
 
-Because ksort has functions that are not inline, even though our functions are,
-this macro must be used only in source files, not in headers, otherwise
-it can cause duplicate symbol issues.
-
-To initialize, in a header it's ok to use
+To initialize in a header, use in combination with VECTOR_INIT
 
 float_array.h
 =============
 VECTOR_INIT(float_array, float)
-
-float_array.c
-=============
 VECTOR_NUMERIC(float_array, float, float, fabsf)
 
 */
 
-#include "ksort/ksort.h"
+#include "sorting/introsort.h"
 
 #define ks_lt_index(a, b) ((a).value < (b).value)
 
@@ -133,8 +126,8 @@ VECTOR_NUMERIC(float_array, float, float, fabsf)
         type value;                                                                                     \
     } type##_index_t;                                                                                   \
                                                                                                         \
-    KSORT_INIT_GENERIC(type)                                                                            \
-    KSORT_INIT(type##_indices, type##_index_t, ks_lt_index)                                             \
+    INTROSORT_INIT_GENERIC(type)                                                                        \
+    INTROSORT_INIT(type##_indices, type##_index_t, ks_lt_index)                                         \
                                                                                                         \
     static inline void name##_sort(type *array, size_t n) {                                             \
         ks_introsort(type, n, array);                                                                   \
