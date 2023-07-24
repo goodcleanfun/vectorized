@@ -127,8 +127,10 @@ static inline void _aligned_free(void *p)
         array->n = new_size;                                                                \
         return ret;                                                                         \
     }                                                                                       \
-    static inline void name##_pop(name *array) {                                            \
-        if (array->n > 0) array->n--;                                                       \
+    static inline bool name##_pop(name *array, type, *result) {                             \
+        if (array->n == 0) return false;                                                    \
+        *result = array->a[--array->n];                                                     \
+        return true;                                                                        \
     }                                                                                       \
     static inline void name##_clear(name *array) {                                          \
         array->n = 0;                                                                       \
