@@ -98,7 +98,7 @@ static inline void aligned_free(void *p)
     }                                                                                       \
     static inline bool name##_resize_aligned(name *array, size_t size, size_t alignment) {  \
         if (size <= array->m) return true;                                                  \
-        type *ptr = aligned_resize(array->a, sizeof(type) * size, alignment);             \
+        type *ptr = aligned_resize(array->a, sizeof(type) * array->m, sizeof(type) * size, alignment);             \
         if (ptr == NULL) return false;                                                      \
         array->a = ptr;                                                                     \
         array->m = size;                                                                    \
