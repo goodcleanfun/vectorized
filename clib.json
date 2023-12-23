@@ -1,6 +1,6 @@
 {
   "name": "vector",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "repo": "goodcleanfun/vector",
   "description": "Generic vectors in C",
   "keywords": ["vector", "array", "generic"],
