@@ -10,15 +10,24 @@
 
 #if defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 #include <malloc.h>
+static inline void *aligned_malloc(size_t size, size_t alignment) {
+    return _aligned_malloc(size, alignment);
+}
+static inline void *aligned_resize(void *p, size_t old_size, size_t new_size, size_t alignment) {
+    return _aligned_realloc(p, new_size, alignment);
+}
+static inline void aligned_free(void *p) {
+    _aligned_free(p);
+}
 #else
 #include <stdlib.h>
-static inline void *_aligned_malloc(size_t size, size_t alignment)
+static inline void *aligned_malloc(size_t size, size_t alignment)
 {
     void *p;
     int ret = posix_memalign(&p, alignment, size);
     return (ret == 0) ? p : NULL;
 }
-static inline void *_aligned_realloc(void *p, size_t size, size_t alignment)
+static inline void *aligned_resize(void *p, size_t old_size, size_t new_size, size_t alignment)
 {
     if ((alignment == 0) || ((alignment & (alignment - 1)) != 0) || (alignment < sizeof(void *))) {
         return NULL;
@@ -28,17 +37,17 @@ static inline void *_aligned_realloc(void *p, size_t size, size_t alignment)
         return NULL;
     }
 
-    void *p1 = _aligned_malloc(size, alignment);
+    void *p1 = aligned_malloc(new_size, alignment);
     if (p1 == NULL) {
         free(p);
         return NULL;
     }
 
-    memcpy(p1, p, size);
+    memcpy(p1, p, old_size);
     free(p);
     return p1;
 }
-static inline void _aligned_free(void *p)
+static inline void aligned_free(void *p)
 {
     free(p);
 }
@@ -74,7 +83,7 @@ static inline void _aligned_free(void *p)
         name *array = malloc(sizeof(name));                                                 \
         if (array == NULL) return NULL;                                                     \
         array->n = array->m = 0;                                                            \
-        array->a = _aligned_malloc(size * sizeof(type), alignment);                         \
+        array->a = aligned_malloc(size * sizeof(type), alignment);                         \
         if (array->a == NULL) return NULL;                                                  \
         array->m = size;                                                                    \
         return array;                                                                       \
@@ -89,7 +98,7 @@ static inline void _aligned_free(void *p)
     }                                                                                       \
     static inline bool name##_resize_aligned(name *array, size_t size, size_t alignment) {  \
         if (size <= array->m) return true;                                                  \
-        type *ptr = _aligned_realloc(array->a, sizeof(type) * size, alignment);             \
+        type *ptr = aligned_resize(array->a, sizeof(type) * size, alignment);             \
         if (ptr == NULL) return false;                                                      \
         array->a = ptr;                                                                     \
         array->m = size;                                                                    \
@@ -157,7 +166,7 @@ static inline void _aligned_free(void *p)
     }                                                                   \
     static inline void name##_destroy_aligned(name *array) {            \
         if (array == NULL) return;                                      \
-        if (array->a != NULL) _aligned_free(array->a);                  \
+        if (array->a != NULL) aligned_free(array->a);                  \
         free(array);                                                    \
     }
 
@@ -179,7 +188,7 @@ static inline void _aligned_free(void *p)
                 free_func(array->a[i]);                                 \
             }                                                           \
         }                                                               \
-        _aligned_free(array->a);                                        \
+        aligned_free(array->a);                                        \
         free(array);                                                    \
     }
 
