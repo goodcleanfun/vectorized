@@ -8,5 +8,8 @@
   "dependencies": {
     "goodcleanfun/sorting": "*"
   },
+  "development": {
+    "silentbicycle/greatest": "*"
+  },
   "src": ["src/vector.h", "src/numeric.h"]
 }
