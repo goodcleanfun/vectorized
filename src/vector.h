@@ -115,24 +115,32 @@ static inline void aligned_free(void *p)
         array->n = size;                                                                    \
         return true;                                                                        \
     }                                                                                       \
-    static inline void name##_push(name *array, type value) {                               \
-        if (array->n == array->m) {                                                         \
-            size_t size = array->m ? array->m * 3 / 2 : DEFAULT_VECTOR_SIZE;                                     \
-            type *ptr = realloc(array->a, sizeof(type) * size);                             \
+    static inline bool name##_push(name *array, type value) {                               \
+        size_t cap = array->m;                                                              \
+        if (array->n >= cap) {                                                              \
+            size_t new_cap = cap > 0 ? cap * 3 / 2 : DEFAULT_VECTOR_SIZE;                   \
+            type *ptr = realloc(array->a, sizeof(type) * new_cap);                          \
             if (ptr == NULL) {                                                              \
-                fprintf(stderr, "realloc failed during " #name "_push\n");                  \
-                exit(EXIT_FAILURE);                                                         \
+                return false;                                                               \
             }                                                                               \
             array->a = ptr;                                                                 \
-            array->m = size;                                                                \
+            array->m = new_cap;                                                             \
         }                                                                                   \
         array->a[array->n++] = value;                                                       \
+        return true;                                                                        \
     }                                                                                       \
     static inline bool name##_extend(name *array, name *other) {                            \
         bool ret = false;                                                                   \
         size_t new_size = array->n + other->n;                                              \
-        if (new_size > array->m) ret = name##_resize(array, new_size);                      \
-        if (!ret) return false;                                                             \
+        size_t current_capacity = array->m;                                                 \
+        if (new_size > current_capacity) {                                                  \
+            size_t capacity = current_capacity;                                             \
+            while (capacity < new_size) {                                                   \
+                capacity = capacity * 3 / 2;                                                \
+            }                                                                               \
+            ret = name##_resize(array, capacity);                                           \
+            if (!ret) return false;                                                         \
+        }                                                                                   \
         memcpy(array->a + array->n, other->a, other->n * sizeof(type));                     \
         array->n = new_size;                                                                \
         return ret;                                                                         \
@@ -167,7 +175,7 @@ static inline void aligned_free(void *p)
     }                                                                   \
     static inline void name##_destroy_aligned(name *array) {            \
         if (array == NULL) return;                                      \
-        if (array->a != NULL) aligned_free(array->a);                  \
+        if (array->a != NULL) aligned_free(array->a);                   \
         free(array);                                                    \
     }
 
@@ -189,7 +197,7 @@ static inline void aligned_free(void *p)
                 free_func(array->a[i]);                                 \
             }                                                           \
         }                                                               \
-        aligned_free(array->a);                                        \
+        aligned_free(array->a);                                         \
         free(array);                                                    \
     }
 
