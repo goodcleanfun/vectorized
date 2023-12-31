@@ -117,7 +117,7 @@ static inline void aligned_free(void *p)
     }                                                                                       \
     static inline void name##_push(name *array, type value) {                               \
         if (array->n == array->m) {                                                         \
-            size_t size = array->m ? array->m << 1 : 2;                                     \
+            size_t size = array->m ? array->m * 3 / 2 : DEFAULT_VECTOR_SIZE;                                     \
             type *ptr = realloc(array->a, sizeof(type) * size);                             \
             if (ptr == NULL) {                                                              \
                 fprintf(stderr, "realloc failed during " #name "_push\n");                  \
