@@ -229,9 +229,10 @@ static inline double VECTOR_NAMESPACED(std)(VECTOR_TYPE *array, size_t n) {
 }
 
 static inline VECTOR_TYPE VECTOR_NAMESPACED(product)(VECTOR_TYPE *array, size_t n) {
-    VECTOR_TYPE result = 0;
+    if (n < 1) return (VECTOR_TYPE) 0;
+    VECTOR_TYPE result = array[0];
     #pragma omp parallel for reduction (+:result)
-    for (size_t i = 0; i < n; i++) {
+    for (size_t i = 1; i < n; i++) {
         result *= array[i];
     }
     return result;
