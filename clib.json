@@ -11,5 +11,5 @@
   "development": {
     "silentbicycle/greatest": "*"
   },
-  "src": ["src/vector.h", "src/numeric.h"]
+  "src": ["src/numeric.h"]
 }
