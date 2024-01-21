@@ -1,41 +1,111 @@
+#include <stdint.h>
 #include "greatest/greatest.h"
-#include "vector.h"
 
-VECTOR_INIT(test_vector, int)
+#define VECTOR_NAME test_vector
+#define VECTOR_TYPE int32_t
+#define VECTOR_TYPE_ABS abs
+#define VECTOR_TYPE_UNSIGNED uint32_t
+#include "numeric.h"
+#undef VECTOR_NAME
+#undef VECTOR_TYPE
+#undef VECTOR_TYPE_ABS
+#undef VECTOR_TYPE_UNSIGNED
 
 
-TEST test_vector_resizing(void) {
-    test_vector *v = test_vector_new();
-    ASSERT_EQ(v->m, DEFAULT_VECTOR_SIZE);
-    ASSERT_EQ(v->n, 0);
-
-    for (int i = 0; i < 10; i++) {
-        test_vector_push(v, i);
-    }
-    size_t expected_size = DEFAULT_VECTOR_SIZE * 3 / 2;
-    ASSERT_EQ(v->m, expected_size);
-    ASSERT_EQ(v->n, 10);
-
-    for (int i = 0; i < 10; i++) {
-        ASSERT_EQ(v->a[i], i);
+TEST test_vector_math(void) {
+    size_t n = 10;
+    int32_t *v = malloc(n * sizeof(int32_t));
+    for (size_t i = 0; i < n; i++) {
+        v[n - i - 1] = i;
     }
 
-    test_vector *w = test_vector_new_size(16);
-    ASSERT_EQ(w->m, 16);
-    ASSERT_EQ(w->n, 0);
-
-    for (int i = 0; i < 17; i++) {
-        test_vector_push(w, i);
+    ASSERT_EQ(test_vector_max(v, n), 9);
+    ASSERT_EQ(test_vector_min(v, n), 0);
+    ASSERT_EQ(test_vector_argmax(v, n), 0);
+    ASSERT_EQ(test_vector_argmin(v, n), 9);
+    test_vector_sort(v, n);
+    size_t *order = test_vector_argsort(v, n);
+    for (size_t i = 0; i < n; i++) {
+        ASSERT_EQ(order[i], i);
     }
-    ASSERT_EQ(w->m, 16 * 3 / 2);
-    ASSERT_EQ(w->n, 17);
+    free(order);
+    ASSERT_EQ(test_vector_argmax(v, n), 9);
+    ASSERT_EQ(test_vector_argmin(v, n), 0);
+    ASSERT_EQ(test_vector_sum(v, n), 45);
+    ASSERT_EQ(test_vector_product(v, n), 0);
+    ASSERT_EQ(test_vector_l1_norm(v, n), 45);
+    ASSERT_EQ(test_vector_l2_norm(v, n), 16.881943016134134);
+    ASSERT_EQ(test_vector_sum_sq(v, n), 285);
+    ASSERT_EQ(test_vector_mean(v, n), 4.5);
+    ASSERT_EQ(test_vector_var(v, n), 8.25);
+    ASSERT_EQ(test_vector_std(v, n), 2.8722813232690143);
+    test_vector_add(v, 1, n);
+    for (size_t i = 0; i < n; i++) {
+        ASSERT_EQ(v[i], i + 1);
+    }
+    ASSERT_EQ(test_vector_product(v, n), 3628800);
+    test_vector_sub(v, 1, n);
+    for (size_t i = 0; i < n; i++) {
+        ASSERT_EQ(v[i], i);
+    }
+    test_vector_mul(v, 2, n);
+    for (size_t i = 0; i < n; i++) {
+        ASSERT_EQ(v[i], i * 2);
+    }
+    test_vector_div(v, 2, n);
+    for (size_t i = 0; i < n; i++) {
+        ASSERT_EQ(v[i], i);
+    }
 
-    test_vector_extend(v, w);
-    expected_size = expected_size * 3 / 2 * 3 /2;
-    ASSERT_EQ(v->m, expected_size);
-    ASSERT_EQ(v->n, 27);
+    int32_t *v_copy = malloc(n * sizeof(int32_t));
+    ASSERT(v_copy != NULL);
+    test_vector_copy(v_copy, v, n);
 
-    test_vector_destroy(v);
+    test_vector_add_array(v, v_copy, n);
+    for (size_t i = 0; i < n; i++) {
+        ASSERT_EQ(v[i], i * 2);
+    }
+    test_vector_sub_array(v, v_copy, n);
+    for (size_t i = 0; i < n; i++) {
+        ASSERT_EQ(v[i], i);
+    }
+
+    test_vector_add_array_scaled(v, v_copy, 2, n);
+    for (size_t i = 0; i < n; i++) {
+        ASSERT_EQ(v[i], i + 2 * i);
+    }
+    test_vector_sub_array_scaled(v, v_copy, 2, n);
+    for (size_t i = 0; i < n; i++) {
+        ASSERT_EQ(v[i], i);
+    }
+
+    // avoid division by 0
+    test_vector_add(v, 1, n);
+    test_vector_add(v_copy, 1, n);
+    test_vector_mul_array(v, v_copy, n);
+    for (size_t i = 0; i < n; i++) {
+        ASSERT_EQ(v[i], (i + 1) * (i + 1));
+    }
+    test_vector_div_array(v, v_copy, n);
+    for (size_t i = 0; i < n; i++) {
+        ASSERT_EQ(v[i], i + 1);
+    }
+
+    test_vector_mul_array_scaled(v, v_copy, 2, n);
+    for (size_t i = 0; i < n; i++) {
+        ASSERT_EQ(v[i], (i + 1) * (i + 1) * 2);
+    }
+    test_vector_div_array_scaled(v, v_copy, 2, n);
+    for (size_t i = 0; i < n; i++) {
+        ASSERT_EQ(v[i], i + 1);
+    }
+
+    test_vector_sub(v, 1, n);
+    test_vector_sub(v_copy, 1, n);
+
+    ASSERT_EQ(test_vector_dot(v, v_copy, n), 285);
+
+    free(v);
     PASS();
 }
 
@@ -45,7 +115,7 @@ GREATEST_MAIN_DEFS();
 int main(int argc, char **argv) {
     GREATEST_MAIN_BEGIN();      /* command-line options, initialization. */
 
-    RUN_TEST(test_vector_resizing);
+    RUN_TEST(test_vector_math);
 
     GREATEST_MAIN_END();        /* display results */
 }
