@@ -238,21 +238,21 @@ static inline VECTOR_TYPE VECTOR_NAMESPACED(product)(VECTOR_TYPE *array, size_t 
     return result;
 }
 
-static inline void VECTOR_NAMESPACED(add_array)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
+static inline void VECTOR_NAMESPACED(add_vector)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         a1[i] += a2[i];
     }
 }
 
-static inline void VECTOR_NAMESPACED(add_array_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
+static inline void VECTOR_NAMESPACED(add_vector_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         a1[i] += a2[i] * v;
     }
 }
 
-static inline void VECTOR_NAMESPACED(sub_array)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
+static inline void VECTOR_NAMESPACED(sub_vector)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         a1[i] -= a2[i];
@@ -260,35 +260,35 @@ static inline void VECTOR_NAMESPACED(sub_array)(VECTOR_TYPE *a1, const VECTOR_TY
 }
 
 
-static inline void VECTOR_NAMESPACED(sub_array_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
+static inline void VECTOR_NAMESPACED(sub_vector_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         a1[i] -= a2[i] * v;
     }
 }
 
-static inline void VECTOR_NAMESPACED(mul_array)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
+static inline void VECTOR_NAMESPACED(mul_vector)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         a1[i] *= a2[i];
     }
 }
 
-static inline void VECTOR_NAMESPACED(mul_array_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
+static inline void VECTOR_NAMESPACED(mul_vector_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         a1[i] *= a2[i] * v;
     }
 }
 
-static inline void VECTOR_NAMESPACED(div_array)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
+static inline void VECTOR_NAMESPACED(div_vector)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         a1[i] /= a2[i];
     }
 }
 
-static inline void VECTOR_NAMESPACED(div_array_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
+static inline void VECTOR_NAMESPACED(div_vector_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         a1[i] /= a2[i] * v;
