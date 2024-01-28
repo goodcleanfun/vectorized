@@ -13,10 +13,6 @@ To initialize in a header, use in combination with VECTOR_INIT
 #include <string.h>
 #include <math.h>
 
-#include "sorting/introsort.h"
-
-#define ks_lt_index(a, b) ((a).value < (b).value)
-
 #endif
 
 #ifndef VECTOR_NAME
@@ -35,26 +31,26 @@ To initialize in a header, use in combination with VECTOR_INIT
 #error "Must define VECTOR_TYPE_ABS"
 #endif
 
-#define CONCAT_(a, b) a ## b
-#define CONCAT(a, b) CONCAT_(a, b)
-#define VECTOR_NAMESPACED(name) CONCAT(VECTOR_NAME, _##name)
+#define VECTOR_CONCAT_(a, b) a ## b
+#define VECTOR_CONCAT(a, b) VECTOR_CONCAT_(a, b)
+#define VECTOR_FUNC(name) VECTOR_CONCAT(VECTOR_NAME, _##name)
 
-static inline void VECTOR_NAMESPACED(zero)(VECTOR_TYPE *array, size_t n) {
+static inline void VECTOR_FUNC(zero)(VECTOR_TYPE *array, size_t n) {
     memset(array, 0, n * sizeof(VECTOR_TYPE));
 }
 
-static inline void VECTOR_NAMESPACED(copy)(VECTOR_TYPE *dst, const VECTOR_TYPE *src, size_t n) {
+static inline void VECTOR_FUNC(copy)(VECTOR_TYPE *dst, const VECTOR_TYPE *src, size_t n) {
     memcpy(dst, src, n * sizeof(VECTOR_TYPE));
 }
 
-static inline void VECTOR_NAMESPACED(set)(VECTOR_TYPE *array, VECTOR_TYPE value, size_t n) {
+static inline void VECTOR_FUNC(set)(VECTOR_TYPE *array, VECTOR_TYPE value, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         array[i] = value;
     }
 }
 
-static inline VECTOR_TYPE VECTOR_NAMESPACED(max)(VECTOR_TYPE *array, size_t n) {
+static inline VECTOR_TYPE VECTOR_FUNC(max)(VECTOR_TYPE *array, size_t n) {
     if (n < 1) return (VECTOR_TYPE) 0;
     VECTOR_TYPE val = array[0];
     VECTOR_TYPE max_val = val;
@@ -65,7 +61,7 @@ static inline VECTOR_TYPE VECTOR_NAMESPACED(max)(VECTOR_TYPE *array, size_t n) {
     return max_val;
 }
 
-static inline VECTOR_TYPE VECTOR_NAMESPACED(min)(VECTOR_TYPE *array, size_t n) {
+static inline VECTOR_TYPE VECTOR_FUNC(min)(VECTOR_TYPE *array, size_t n) {
     if (n < 1) return (VECTOR_TYPE) 0;
     VECTOR_TYPE val = array[0];
     VECTOR_TYPE min_val = val;
@@ -76,7 +72,7 @@ static inline VECTOR_TYPE VECTOR_NAMESPACED(min)(VECTOR_TYPE *array, size_t n) {
     return min_val;
 }
 
-static inline int64_t VECTOR_NAMESPACED(argmax)(VECTOR_TYPE *array, size_t n) {
+static inline int64_t VECTOR_FUNC(argmax)(VECTOR_TYPE *array, size_t n) {
     if (n < 1) return -1;
     VECTOR_TYPE val = array[0];
     VECTOR_TYPE max_val = val;
@@ -91,7 +87,7 @@ static inline int64_t VECTOR_NAMESPACED(argmax)(VECTOR_TYPE *array, size_t n) {
     return argmax;
 }
 
-static inline int64_t VECTOR_NAMESPACED(argmin)(VECTOR_TYPE *array, size_t n) {
+static inline int64_t VECTOR_FUNC(argmin)(VECTOR_TYPE *array, size_t n) {
     if (n < 1) return (VECTOR_TYPE) -1;
     VECTOR_TYPE val = array[0];
     VECTOR_TYPE min_val = val;
@@ -106,72 +102,71 @@ static inline int64_t VECTOR_NAMESPACED(argmin)(VECTOR_TYPE *array, size_t n) {
     return argmin;
 }
 
-#define VECTOR_INIT_SORT(type) INTROSORT_INIT_GENERIC(type)
-#define VECTOR_SORT(type, n, array) ks_introsort(type, n, array)
-#define VECTOR_INDEX_TYPE VECTOR_NAMESPACED(index_t)
-#define VECTOR_INDEX_TYPE_NAME VECTOR_NAMESPACED(indices)
+#define VECTOR_INDEX_NAME VECTOR_CONCAT(VECTOR_NAME, _index)
+#define VECTOR_SORT_FUNC(name) VECTOR_CONCAT(name##_, VECTOR_NAME)
+#define VECTOR_SORT_INDEX_FUNC(name) VECTOR_CONCAT(name##_, VECTOR_INDEX_NAME)
 
-typedef struct {
-    size_t index;
-    VECTOR_TYPE value;
-} VECTOR_INDEX_TYPE;
+#define INTROSORT_NAME VECTOR_NAME
+#define INTROSORT_TYPE VECTOR_TYPE
+#include "sorting/introsort.h"
+#undef INTROSORT_TYPE
+#undef INTROSORT_NAME
 
-VECTOR_INIT_SORT(VECTOR_TYPE)
-INTROSORT_INIT(VECTOR_INDEX_TYPE_NAME, VECTOR_INDEX_TYPE, ks_lt_index)
-
-static inline void VECTOR_NAMESPACED(sort)(VECTOR_TYPE *array, size_t n) {
-    VECTOR_SORT(VECTOR_TYPE, n, array);
+static inline void VECTOR_FUNC(sort)(VECTOR_TYPE *array, size_t n) {
+    VECTOR_SORT_FUNC(introsort)(n, array);
 }
 
-static inline size_t *VECTOR_NAMESPACED(argsort)(VECTOR_TYPE *array, size_t n) {
-    VECTOR_INDEX_TYPE *type_indices = malloc(sizeof(VECTOR_INDEX_TYPE) * n);
-    size_t i;
-    for (i = 0; i < n; i++) {
-        type_indices[i] = (VECTOR_INDEX_TYPE){i, array[i]};
-    }
-    ks_introsort(VECTOR_INDEX_TYPE_NAME, n, type_indices);
+#define INTROSORT_NAME VECTOR_INDEX_NAME
+#define INTROSORT_TYPE size_t
+#define INTROSORT_AUX_TYPE VECTOR_TYPE
+#include "sorting/introsort.h"
+#undef INTROSORT_NAME
+#undef INTROSORT_TYPE
+#undef INTROSORT_AUX_TYPE
+
+static inline size_t *VECTOR_FUNC(argsort)(VECTOR_TYPE *array, size_t n) {
     size_t *indices = malloc(sizeof(size_t) * n);
-    for (i = 0; i < n; i++) {
-        indices[i] = type_indices[i].index;
+    if (indices == NULL) return NULL;
+    for (size_t i = 0; i < n; i++) {
+        indices[i] = i;
     }
-    free(type_indices);
+    VECTOR_SORT_INDEX_FUNC(introsort)(n, indices, array);
     return indices;
 }
 
-#undef VECTOR_INDEX
-#undef VECTOR_INDEX_TYPE
-#undef VECTOR_INDEX_TYPE_NAME
+#undef VECTOR_INDEX_NAME
+#undef VECTOR_SORT_FUNC
+#undef VECTOR_SORT_INDEX_FUNC
 
-
-static inline void VECTOR_NAMESPACED(add)(VECTOR_TYPE *array, VECTOR_TYPE c, size_t n) {
+static inline void VECTOR_FUNC(add)(VECTOR_TYPE *array, VECTOR_TYPE c, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         array[i] += c;
     }
 }
 
-static inline void VECTOR_NAMESPACED(sub)(VECTOR_TYPE *array, VECTOR_TYPE c, size_t n) {
+static inline void VECTOR_FUNC(sub)(VECTOR_TYPE *array, VECTOR_TYPE c, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         array[i] -= c;
     }
 }
 
-static inline void VECTOR_NAMESPACED(mul)(VECTOR_TYPE *array, VECTOR_TYPE c, size_t n) {
+static inline void VECTOR_FUNC(mul)(VECTOR_TYPE *array, VECTOR_TYPE c, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         array[i] *= c;
     }
 }
 
-static inline void VECTOR_NAMESPACED(div)(VECTOR_TYPE *array, VECTOR_TYPE c, size_t n) {
+static inline void VECTOR_FUNC(div)(VECTOR_TYPE *array, VECTOR_TYPE c, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         array[i] /= c;
     }
 }
 
-static inline VECTOR_TYPE VECTOR_NAMESPACED(sum)(VECTOR_TYPE *array, size_t n) {
+static inline VECTOR_TYPE VECTOR_FUNC(sum)(VECTOR_TYPE *array, size_t n) {
     VECTOR_TYPE result = 0;
     #pragma omp parallel for reduction (+:result)
     for (size_t i = 0; i < n; i++) {
@@ -180,7 +175,7 @@ static inline VECTOR_TYPE VECTOR_NAMESPACED(sum)(VECTOR_TYPE *array, size_t n) {
     return result;
 }
 
-static inline VECTOR_TYPE_UNSIGNED VECTOR_NAMESPACED(l1_norm)(VECTOR_TYPE *array, size_t n) {
+static inline VECTOR_TYPE_UNSIGNED VECTOR_FUNC(l1_norm)(VECTOR_TYPE *array, size_t n) {
     VECTOR_TYPE_UNSIGNED result = 0;
     #pragma omp parallel for reduction (+:result)
     for (size_t i = 0; i < n; i++) {
@@ -189,7 +184,7 @@ static inline VECTOR_TYPE_UNSIGNED VECTOR_NAMESPACED(l1_norm)(VECTOR_TYPE *array
     return result;
 }
 
-static inline double VECTOR_NAMESPACED(l2_norm)(VECTOR_TYPE *array, size_t n) {
+static inline double VECTOR_FUNC(l2_norm)(VECTOR_TYPE *array, size_t n) {
     VECTOR_TYPE_UNSIGNED result = 0;
     #pragma omp parallel for reduction (+:result)
     for (size_t i = 0; i < n; i++) {
@@ -198,7 +193,7 @@ static inline double VECTOR_NAMESPACED(l2_norm)(VECTOR_TYPE *array, size_t n) {
     return sqrt((double)result);
 }
 
-static inline VECTOR_TYPE_UNSIGNED VECTOR_NAMESPACED(sum_sq)(VECTOR_TYPE *array, size_t n) {
+static inline VECTOR_TYPE_UNSIGNED VECTOR_FUNC(sum_sq)(VECTOR_TYPE *array, size_t n) {
     VECTOR_TYPE_UNSIGNED result = 0;
     #pragma omp parallel for reduction (+:result)
     for (size_t i = 0; i < n; i++) {
@@ -207,13 +202,13 @@ static inline VECTOR_TYPE_UNSIGNED VECTOR_NAMESPACED(sum_sq)(VECTOR_TYPE *array,
     return result;
 }
 
-static inline double VECTOR_NAMESPACED(mean)(VECTOR_TYPE *array, size_t n) {
-    VECTOR_TYPE_UNSIGNED sum = VECTOR_NAMESPACED(sum)(array, n);
+static inline double VECTOR_FUNC(mean)(VECTOR_TYPE *array, size_t n) {
+    VECTOR_TYPE_UNSIGNED sum = VECTOR_FUNC(sum)(array, n);
     return (double)sum / n;
 }
 
-static inline double VECTOR_NAMESPACED(var)(VECTOR_TYPE *array, size_t n) {
-    double mu = VECTOR_NAMESPACED(mean)(array, n);
+static inline double VECTOR_FUNC(var)(VECTOR_TYPE *array, size_t n) {
+    double mu = VECTOR_FUNC(mean)(array, n);
     double sigma2 = 0.0;
     #pragma omp parallel for reduction (+:sigma2)
     for (size_t i = 0; i < n; i++) {
@@ -223,12 +218,12 @@ static inline double VECTOR_NAMESPACED(var)(VECTOR_TYPE *array, size_t n) {
     return sigma2 / n;
 }
 
-static inline double VECTOR_NAMESPACED(std)(VECTOR_TYPE *array, size_t n) {
-    double sigma2 = VECTOR_NAMESPACED(var)(array, n);
+static inline double VECTOR_FUNC(std)(VECTOR_TYPE *array, size_t n) {
+    double sigma2 = VECTOR_FUNC(var)(array, n);
     return sqrt(sigma2);
 }
 
-static inline VECTOR_TYPE VECTOR_NAMESPACED(product)(VECTOR_TYPE *array, size_t n) {
+static inline VECTOR_TYPE VECTOR_FUNC(product)(VECTOR_TYPE *array, size_t n) {
     if (n < 1) return (VECTOR_TYPE) 0;
     VECTOR_TYPE result = array[0];
     #pragma omp parallel for reduction (+:result)
@@ -238,21 +233,21 @@ static inline VECTOR_TYPE VECTOR_NAMESPACED(product)(VECTOR_TYPE *array, size_t 
     return result;
 }
 
-static inline void VECTOR_NAMESPACED(add_vector)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
+static inline void VECTOR_FUNC(add_vector)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         a1[i] += a2[i];
     }
 }
 
-static inline void VECTOR_NAMESPACED(add_vector_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
+static inline void VECTOR_FUNC(add_vector_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         a1[i] += a2[i] * v;
     }
 }
 
-static inline void VECTOR_NAMESPACED(sub_vector)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
+static inline void VECTOR_FUNC(sub_vector)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         a1[i] -= a2[i];
@@ -260,42 +255,42 @@ static inline void VECTOR_NAMESPACED(sub_vector)(VECTOR_TYPE *a1, const VECTOR_T
 }
 
 
-static inline void VECTOR_NAMESPACED(sub_vector_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
+static inline void VECTOR_FUNC(sub_vector_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         a1[i] -= a2[i] * v;
     }
 }
 
-static inline void VECTOR_NAMESPACED(mul_vector)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
+static inline void VECTOR_FUNC(mul_vector)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         a1[i] *= a2[i];
     }
 }
 
-static inline void VECTOR_NAMESPACED(mul_vector_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
+static inline void VECTOR_FUNC(mul_vector_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         a1[i] *= a2[i] * v;
     }
 }
 
-static inline void VECTOR_NAMESPACED(div_vector)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
+static inline void VECTOR_FUNC(div_vector)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         a1[i] /= a2[i];
     }
 }
 
-static inline void VECTOR_NAMESPACED(div_vector_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
+static inline void VECTOR_FUNC(div_vector_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
     #pragma omp parallel for
     for (size_t i = 0; i < n; i++) {
         a1[i] /= a2[i] * v;
     }
 }
 
-static inline VECTOR_TYPE VECTOR_NAMESPACED(dot)(const VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
+static inline VECTOR_TYPE VECTOR_FUNC(dot)(const VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
     VECTOR_TYPE result = 0;
     #pragma omp parallel for reduction (+:result)
     for (size_t i = 0; i < n; i++) {
@@ -304,6 +299,6 @@ static inline VECTOR_TYPE VECTOR_NAMESPACED(dot)(const VECTOR_TYPE *a1, const VE
     return result;
 }
 
-#undef CONCAT_
-#undef CONCAT
-#undef VECTOR_NAMESPACED
+#undef VECTOR_FUNC
+#undef VECTOR_CONCAT_
+#undef VECTOR_CONCAT
