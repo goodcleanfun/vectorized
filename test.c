@@ -23,14 +23,13 @@ TEST test_vector_math(void) {
     ASSERT_EQ(test_vector_min(v, n), 0);
     ASSERT_EQ(test_vector_argmax(v, n), 0);
     ASSERT_EQ(test_vector_argmin(v, n), 9);
-    size_t *order;
-    order = test_vector_argsort(v, n);
+    size_t *order = malloc(sizeof(size_t) * n);
+    ASSERT(test_vector_argsort(v, n, order));
     for (size_t i = 0; i < n; i++) {
         ASSERT_EQ(order[i], n - i - 1);
     }
-    free(order);
     test_vector_sort(v, n);
-    order = test_vector_argsort(v, n);
+    ASSERT(test_vector_argsort(v, n, order));
     for (size_t i = 0; i < n; i++) {
         ASSERT_EQ(order[i], i);
     }

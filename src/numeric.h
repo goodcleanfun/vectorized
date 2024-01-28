@@ -124,14 +124,13 @@ static inline void VECTOR_FUNC(sort)(VECTOR_TYPE *array, size_t n) {
 #undef INTROSORT_TYPE
 #undef INTROSORT_AUX_TYPE
 
-static inline size_t *VECTOR_FUNC(argsort)(VECTOR_TYPE *array, size_t n) {
-    size_t *indices = malloc(sizeof(size_t) * n);
-    if (indices == NULL) return NULL;
+static inline bool VECTOR_FUNC(argsort)(VECTOR_TYPE *array, size_t n, size_t *indices) {
+    if (indices == NULL) return false;
     for (size_t i = 0; i < n; i++) {
         indices[i] = i;
     }
     VECTOR_SORT_INDEX_FUNC(introsort)(n, indices, array);
-    return indices;
+    return true;
 }
 
 #undef VECTOR_INDEX_NAME
