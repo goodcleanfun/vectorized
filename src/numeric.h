@@ -224,7 +224,7 @@ static inline double VECTOR_FUNC(std)(VECTOR_TYPE *array, size_t n) {
 static inline VECTOR_TYPE VECTOR_FUNC(product)(VECTOR_TYPE *array, size_t n) {
     if (n < 1) return (VECTOR_TYPE) 0;
     VECTOR_TYPE result = array[0];
-    #pragma omp parallel for reduction (+:result)
+    #pragma omp parallel for reduction (*:result)
     for (size_t i = 1; i < n; i++) {
         result *= array[i];
     }
