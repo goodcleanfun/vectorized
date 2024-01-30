@@ -10,7 +10,6 @@ To initialize in a header, use in combination with VECTOR_INIT
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <math.h>
 
 #endif
@@ -25,10 +24,6 @@ To initialize in a header, use in combination with VECTOR_INIT
 
 #ifndef VECTOR_TYPE_UNSIGNED
 #define VECTOR_TYPE_UNSIGNED VECTOR_TYPE
-#endif
-
-#ifndef VECTOR_TYPE_ABS
-#error "Must define VECTOR_TYPE_ABS"
 #endif
 
 #define VECTOR_CONCAT_(a, b) a ## b
@@ -178,7 +173,11 @@ static inline VECTOR_TYPE_UNSIGNED VECTOR_FUNC(l1_norm)(VECTOR_TYPE *array, size
     VECTOR_TYPE_UNSIGNED result = 0;
     #pragma omp parallel for reduction (+:result)
     for (size_t i = 0; i < n; i++) {
+        #ifdef VECTOR_TYPE_ABS
         result += VECTOR_TYPE_ABS(array[i]);
+        #else
+        result += abs(array[i]);
+        #endif
     }
     return result;
 }
