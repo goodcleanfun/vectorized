@@ -1,3 +1,3 @@
-# vector
+# vector_ops
 
-Simple generic vectors and basic functionality for any type in C.
+Generic vector functions for numeric types in C using OpenMP if available.
