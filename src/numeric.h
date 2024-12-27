@@ -57,6 +57,7 @@ static inline VECTOR_TYPE VECTOR_FUNC(max)(VECTOR_TYPE *array, size_t n) {
     if (n < 1) return (VECTOR_TYPE) 0;
     VECTOR_TYPE val = array[0];
     VECTOR_TYPE max_val = val;
+    #pragma omp parallel for reduction(max:max_val) if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 1; i < n; i++) {
         val = array[i];
         if (val > max_val) max_val = val;
@@ -68,6 +69,7 @@ static inline VECTOR_TYPE VECTOR_FUNC(min)(VECTOR_TYPE *array, size_t n) {
     if (n < 1) return (VECTOR_TYPE) 0;
     VECTOR_TYPE val = array[0];
     VECTOR_TYPE min_val = val;
+    #pragma omp parallel for reduction(min:min_val) if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 1; i < n; i++) {
         val = array[i];
         if (val < min_val) min_val = val;
