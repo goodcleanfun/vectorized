@@ -1,6 +1,6 @@
 {
   "name": "vector_ops",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "repo": "goodcleanfun/vector_ops",
   "description": "Vectorized functions for numeric types in C",
   "keywords": ["vector", "array", "generic", "openmp"],
