@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "nop.h"
+
 #define VECTOR_NAME uint32_vector
 #define VECTOR_TYPE uint32_t
 #define VECTOR_TYPE_ABS nop
