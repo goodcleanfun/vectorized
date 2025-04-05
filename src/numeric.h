@@ -107,41 +107,6 @@ static inline int64_t VECTOR_FUNC(argmin)(VECTOR_TYPE *array, size_t n) {
     return argmin;
 }
 
-#define VECTOR_INDEX_NAME VECTOR_CONCAT(VECTOR_NAME, _index)
-#define VECTOR_SORT_FUNC(name) VECTOR_CONCAT(name##_, VECTOR_NAME)
-#define VECTOR_SORT_INDEX_FUNC(name) VECTOR_CONCAT(name##_, VECTOR_INDEX_NAME)
-
-#define INTROSORT_NAME VECTOR_NAME
-#define INTROSORT_TYPE VECTOR_TYPE
-#include "sorting/introsort.h"
-#undef INTROSORT_TYPE
-#undef INTROSORT_NAME
-
-static inline void VECTOR_FUNC(sort)(VECTOR_TYPE *array, size_t n) {
-    VECTOR_SORT_FUNC(introsort)(n, array);
-}
-
-#define INTROSORT_NAME VECTOR_INDEX_NAME
-#define INTROSORT_TYPE size_t
-#define INTROSORT_AUX_TYPE VECTOR_TYPE
-#include "sorting/introsort.h"
-#undef INTROSORT_NAME
-#undef INTROSORT_TYPE
-#undef INTROSORT_AUX_TYPE
-
-static inline bool VECTOR_FUNC(argsort)(VECTOR_TYPE *array, size_t n, size_t *indices) {
-    if (indices == NULL) return false;
-    for (size_t i = 0; i < n; i++) {
-        indices[i] = i;
-    }
-    VECTOR_SORT_INDEX_FUNC(introsort)(n, indices, array);
-    return true;
-}
-
-#undef VECTOR_INDEX_NAME
-#undef VECTOR_SORT_FUNC
-#undef VECTOR_SORT_INDEX_FUNC
-
 static inline void VECTOR_FUNC(add)(VECTOR_TYPE *array, VECTOR_TYPE c, size_t n) {
     #pragma omp parallel for if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {

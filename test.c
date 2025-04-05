@@ -23,19 +23,6 @@ TEST test_vector_math(void) {
     ASSERT_EQ(test_vector_min(v, n), 0);
     ASSERT_EQ(test_vector_argmax(v, n), 0);
     ASSERT_EQ(test_vector_argmin(v, n), 9);
-    size_t *order = malloc(sizeof(size_t) * n);
-    ASSERT(test_vector_argsort(v, n, order));
-    for (size_t i = 0; i < n; i++) {
-        ASSERT_EQ(order[i], n - i - 1);
-    }
-    test_vector_sort(v, n);
-    ASSERT(test_vector_argsort(v, n, order));
-    for (size_t i = 0; i < n; i++) {
-        ASSERT_EQ(order[i], i);
-    }
-    free(order);
-    ASSERT_EQ(test_vector_argmax(v, n), 9);
-    ASSERT_EQ(test_vector_argmin(v, n), 0);
     ASSERT_EQ(test_vector_sum(v, n), 45);
     ASSERT_EQ(test_vector_product(v, n), 0);
     ASSERT_EQ(test_vector_l1_norm(v, n), 45);
@@ -46,20 +33,20 @@ TEST test_vector_math(void) {
     ASSERT_EQ(test_vector_std(v, n), 2.8722813232690143);
     test_vector_add(v, 1, n);
     for (size_t i = 0; i < n; i++) {
-        ASSERT_EQ(v[i], i + 1);
+        ASSERT_EQ(v[n - i - 1], i + 1);
     }
     ASSERT_EQ(test_vector_product(v, n), 3628800);
     test_vector_sub(v, 1, n);
     for (size_t i = 0; i < n; i++) {
-        ASSERT_EQ(v[i], i);
+        ASSERT_EQ(v[n - i - 1], i);
     }
     test_vector_mul(v, 2, n);
     for (size_t i = 0; i < n; i++) {
-        ASSERT_EQ(v[i], i * 2);
+        ASSERT_EQ(v[n - i - 1], i * 2);
     }
     test_vector_div(v, 2, n);
     for (size_t i = 0; i < n; i++) {
-        ASSERT_EQ(v[i], i);
+        ASSERT_EQ(v[n - i - 1], i);
     }
 
     int32_t *v_copy = malloc(n * sizeof(int32_t));
@@ -68,20 +55,20 @@ TEST test_vector_math(void) {
 
     test_vector_add_vector(v, v_copy, n);
     for (size_t i = 0; i < n; i++) {
-        ASSERT_EQ(v[i], i * 2);
+        ASSERT_EQ(v[n - i - 1], i * 2);
     }
     test_vector_sub_vector(v, v_copy, n);
     for (size_t i = 0; i < n; i++) {
-        ASSERT_EQ(v[i], i);
+        ASSERT_EQ(v[n - i - 1], i);
     }
 
     test_vector_add_vector_scaled(v, v_copy, 2, n);
     for (size_t i = 0; i < n; i++) {
-        ASSERT_EQ(v[i], i + 2 * i);
+        ASSERT_EQ(v[n - i - 1], i + 2 * i);
     }
     test_vector_sub_vector_scaled(v, v_copy, 2, n);
     for (size_t i = 0; i < n; i++) {
-        ASSERT_EQ(v[i], i);
+        ASSERT_EQ(v[n - i - 1], i);
     }
 
     // avoid division by 0
@@ -89,20 +76,20 @@ TEST test_vector_math(void) {
     test_vector_add(v_copy, 1, n);
     test_vector_mul_vector(v, v_copy, n);
     for (size_t i = 0; i < n; i++) {
-        ASSERT_EQ(v[i], (i + 1) * (i + 1));
+        ASSERT_EQ(v[n - i - 1], (i + 1) * (i + 1));
     }
     test_vector_div_vector(v, v_copy, n);
     for (size_t i = 0; i < n; i++) {
-        ASSERT_EQ(v[i], i + 1);
+        ASSERT_EQ(v[n - i -1], i + 1);
     }
 
     test_vector_mul_vector_scaled(v, v_copy, 2, n);
     for (size_t i = 0; i < n; i++) {
-        ASSERT_EQ(v[i], (i + 1) * (i + 1) * 2);
+        ASSERT_EQ(v[n - i - 1], (i + 1) * (i + 1) * 2);
     }
     test_vector_div_vector_scaled(v, v_copy, 2, n);
     for (size_t i = 0; i < n; i++) {
-        ASSERT_EQ(v[i], i + 1);
+        ASSERT_EQ(v[n - i - 1], i + 1);
     }
 
     test_vector_sub(v, 1, n);

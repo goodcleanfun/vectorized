@@ -5,9 +5,6 @@
   "description": "Vectorized functions for numeric types in C",
   "keywords": ["vector", "array", "generic", "openmp"],
   "license": "MIT",
-  "dependencies": {
-    "goodcleanfun/sorting": "*"
-  },
   "development": {
     "silentbicycle/greatest": "*"
   },
