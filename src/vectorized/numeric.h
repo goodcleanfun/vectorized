@@ -1,11 +1,5 @@
 #ifndef VECTOR_NUMERIC_H
 #define VECTOR_NUMERIC_H
-/*
-vector/numeric.h
-
-To initialize in a header, use in combination with VECTOR_INIT
-
-*/
 
 #include <stdbool.h>
 #include <stdio.h>

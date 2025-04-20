@@ -5,12 +5,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "nop.h"
+#include "vectorized/nop.h"
 
 #define VECTOR_NAME uint32_vector
 #define VECTOR_TYPE uint32_t
 #define VECTOR_TYPE_ABS nop
-#include "numeric.h"
+#include "vectorized/numeric.h"
 #undef VECTOR_NAME
 #undef VECTOR_TYPE
 #undef VECTOR_TYPE_ABS

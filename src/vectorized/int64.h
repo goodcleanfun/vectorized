@@ -9,7 +9,7 @@
 #define VECTOR_TYPE int64_t
 #define VECTOR_TYPE_ABS llabs
 #define VECTOR_TYPE_UNSIGNED uint64_t
-#include "numeric.h"
+#include "vectorized/numeric.h"
 #undef VECTOR_NAME
 #undef VECTOR_TYPE
 #undef VECTOR_TYPE_ABS

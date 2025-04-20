@@ -5,7 +5,7 @@
 #define VECTOR_TYPE int32_t
 #define VECTOR_TYPE_ABS abs
 #define VECTOR_TYPE_UNSIGNED uint32_t
-#include "numeric.h"
+#include "vectorized/numeric.h"
 #undef VECTOR_NAME
 #undef VECTOR_TYPE
 #undef VECTOR_TYPE_ABS
