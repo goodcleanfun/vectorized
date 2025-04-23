@@ -17,7 +17,7 @@
 #endif
 
 #ifndef FLT_MIN
-#define FLT_MIN 1.17549435e-38F
+#define FLT_MIN 1.175494351e-38F
 #endif
 
 #ifndef DBL_MIN
