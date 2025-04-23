@@ -7,13 +7,13 @@
 #define VECTOR_TYPE int32_t
 #define VECTOR_TYPE_ABS abs
 #define VECTOR_TYPE_UNSIGNED uint32_t
-#include "vectorized/numeric.h"
+#include "numeric.h"
 #undef VECTOR_NAME
 #undef VECTOR_TYPE
 #undef VECTOR_TYPE_ABS
 #undef VECTOR_TYPE_UNSIGNED
 
-#include "vectorized/simd_math.h"
+#include "simd_math.h"
 
 
 TEST test_vector_math(void) {
