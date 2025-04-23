@@ -2,6 +2,9 @@
 #define VECTORIZED_SIMD_MATH_H
 
 #include <stdint.h>
+#ifdef _MSC_VER
+#define _CRT_INTERNAL_NONSTDC_NAMES 1
+#endif
 #include <float.h>
 #include <fenv.h>
 #include <math.h>
