@@ -16,6 +16,14 @@
 #include <limits.h>
 #endif
 
+#ifndef FLT_MIN
+#define FLT_MIN 1.17549435e-38F
+#endif
+
+#ifndef DBL_MIN
+#define DBL_MIN 2.2250738585072014e-308
+#endif
+
 #include "aligned/aligned.h"
 #include "simde_avx2/avx2.h"
 
