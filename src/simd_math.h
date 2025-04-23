@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <float.h>
+#include <fenv.h>
 #include <math.h>
 #ifdef _MSC_VER
 #include <limits.h>
