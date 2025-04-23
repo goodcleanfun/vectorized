@@ -1,4 +1,6 @@
 #include <stdint.h>
+#include <math.h>
+
 #include "greatest/greatest.h"
 
 #define VECTOR_NAME test_vector
@@ -10,6 +12,8 @@
 #undef VECTOR_TYPE
 #undef VECTOR_TYPE_ABS
 #undef VECTOR_TYPE_UNSIGNED
+
+#include "vectorized/simd_math.h"
 
 
 TEST test_vector_math(void) {
@@ -101,6 +105,23 @@ TEST test_vector_math(void) {
     PASS();
 }
 
+TEST test_vector_simd_math(void) {
+    float alignas(32) f[8] = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0};
+    simde__m256 vf = simde_mm256_load_ps(f);
+    simde__m256 exp_i = exp256_ps(vf);
+
+    float alignas(32) exp_f[8];
+    simde_mm256_store_ps(exp_f, exp_i);
+
+    for (int i = 0; i < sizeof(exp_f) / sizeof(float); i++) {
+        printf("exp_f[%d]: %f\n", i, exp_f[i]);
+        printf("f[%d]: %f\n", i, exp(f[i]));
+        ASSERT(fabs(exp_f[i] - exp(f[i])) < 1e-4);
+    }
+
+    PASS();
+}
+
 /* Add definitions that need to be in the test runner's main file. */
 GREATEST_MAIN_DEFS();
 
@@ -108,6 +129,7 @@ int main(int argc, char **argv) {
     GREATEST_MAIN_BEGIN();      /* command-line options, initialization. */
 
     RUN_TEST(test_vector_math);
+    RUN_TEST(test_vector_simd_math);
 
     GREATEST_MAIN_END();        /* display results */
 }
