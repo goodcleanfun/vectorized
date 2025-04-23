@@ -97,7 +97,7 @@ jobs:
           curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/ssse3.h -o deps\simde_avx2\ssse3.h
 
       - name: Run tests with MSVC
-        run: make CC=cl CFLAGS="/std:c11" test
+        run: make CC=cl CFLAGS="/std:c11 /arch:AVX2" test
 
   test-windows-mingw:
     runs-on: windows-latest
