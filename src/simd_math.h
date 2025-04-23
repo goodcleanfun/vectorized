@@ -1,3 +1,6 @@
+#ifndef VECTORIZED_SIMD_MATH_H
+#define VECTORIZED_SIMD_MATH_H
+
 #include <stdint.h>
 #include <float.h>
 
@@ -479,3 +482,5 @@ void sincos256_ps(simde__m256 x, simde__m256 *s, simde__m256 *c) {
   *s = simde_mm256_xor_ps(xmm1, sign_bit_sin);
   *c = simde_mm256_xor_ps(xmm2, sign_bit_cos);
 }
+
+#endif
