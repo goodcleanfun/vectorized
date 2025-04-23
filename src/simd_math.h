@@ -2,27 +2,9 @@
 #define VECTORIZED_SIMD_MATH_H
 
 #include <stdint.h>
-#if defined(_MSC_VER) && !defined(_SW_INVALID)
-#define _SW_INEXACT    0x0001
-#define _SW_UNDERFLOW  0x0002
-#define _SW_OVERFLOW   0x0004
-#define _SW_ZERODIVIDE 0x0008
-#define _SW_INVALID    0x0010
-#endif
 #include <float.h>
 #include <math.h>
 #include <fenv.h>
-#ifdef _MSC_VER
-#include <limits.h>
-#endif
-
-#ifndef FLT_MIN
-#define FLT_MIN 1.175494351e-38F
-#endif
-
-#ifndef DBL_MIN
-#define DBL_MIN 2.2250738585072014e-308
-#endif
 
 #include "aligned/aligned.h"
 #include "simde_avx2/avx2.h"
