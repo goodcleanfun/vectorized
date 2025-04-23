@@ -2,8 +2,12 @@
 #define VECTORIZED_SIMD_MATH_H
 
 #include <stdint.h>
-#ifdef _MSC_VER
-#define _CRT_INTERNAL_NONSTDC_NAMES 1
+#if defined(_MSC_VER) && !defined(_SW_INVALID)
+#define _SW_INEXACT    0x0001
+#define _SW_UNDERFLOW  0x0002
+#define _SW_OVERFLOW   0x0004
+#define _SW_ZERODIVIDE 0x0008
+#define _SW_INVALID    0x0010
 #endif
 #include <float.h>
 #include <fenv.h>
