@@ -30,8 +30,10 @@ jobs:
           cd clib
           make
           sudo make install
+      - name: Install dependencies
+        run: make install
       - name: Run tests
-        run: make CC=${{ matrix.compiler }} CFLAGS="-std=gnu11" LDFLAGS="-lm" install test
+        run: make CC=${{ matrix.compiler }} CFLAGS="-std=gnu11" LDFLAGS="-lm" test
 
   test-macos:
     runs-on: macos-latest
