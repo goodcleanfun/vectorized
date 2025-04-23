@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 #include <float.h>
+#include <math.h>
+#include <fenv.h>
 
 #include "aligned/aligned.h"
 #include "simde_avx2/avx2.h"
