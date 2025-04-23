@@ -2,8 +2,8 @@
 #define VECTORIZED_SIMD_MATH_H
 
 #include <stdint.h>
+#include <float.h>
 #include <math.h>
-#include <fenv.h>
 #ifdef _MSC_VER
 #include <limits.h>
 #endif
