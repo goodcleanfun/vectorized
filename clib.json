@@ -5,6 +5,10 @@
   "description": "Vectorized functions for numeric types in C",
   "keywords": ["vector", "array", "generic", "openmp"],
   "license": "MIT",
+  "dependencies": {
+    "goodcleanfun/aligned": "*",
+    "goodcleanfun/simde_avx2": "*"
+  },
   "development": {
     "silentbicycle/greatest": "*"
   },
