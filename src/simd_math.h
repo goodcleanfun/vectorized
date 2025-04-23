@@ -10,8 +10,8 @@
 #define _SW_INVALID    0x0010
 #endif
 #include <float.h>
-#include <fenv.h>
 #include <math.h>
+#include <fenv.h>
 #ifdef _MSC_VER
 #include <limits.h>
 #endif
