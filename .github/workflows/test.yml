@@ -72,14 +72,14 @@ jobs:
           mkdir -p deps\aligned
           curl -L https://raw.githubusercontent.com/goodcleanfun/aligned/refs/heads/main/src/aligned.h -o deps\aligned\aligned.h
           mkdir -p deps\simde_avx2
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/src/avx.h -o deps\simde_avx2\avx.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/src/avx2.h -o deps\simde_avx2\avx2.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/src/check.h -o deps\simde_avx2\check.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/src/debug-trap.h -o deps\simde_avx2\debug-trap.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/src/hedley.h -o deps\simde_avx2\hedley.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/src/mmx.h -o deps\simde_avx2\mmx.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/src/simde-align.h -o deps\simde_avx2\simde-align.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/src/simde-arch.h -o deps\simde_avx2\simde-arch.h
+          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/avx.h -o deps\simde_avx2\avx.h
+          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/avx2.h -o deps\simde_avx2\avx2.h
+          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/check.h -o deps\simde_avx2\check.h
+          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/debug-trap.h -o deps\simde_avx2\debug-trap.h
+          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/hedley.h -o deps\simde_avx2\hedley.h
+          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/mmx.h -o deps\simde_avx2\mmx.h
+          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-align.h -o deps\simde_avx2\simde-align.h
+          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-arch.h -o deps\simde_avx2\simde-arch.h
           curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-common.h -o deps\simde_avx2\simde-common.h
           curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-constify.h -o deps\simde_avx2\simde-constify.h
           curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-detect-clang.h -o deps\simde_avx2\simde-detect-clang.h
