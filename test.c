@@ -14,7 +14,7 @@
 #undef VECTOR_TYPE_UNSIGNED
 
 #include "simd_math.h"
-
+#include "float32.h"
 
 TEST test_vector_math(void) {
     size_t n = 10;
@@ -105,6 +105,24 @@ TEST test_vector_math(void) {
     PASS();
 }
 
+TEST test_float32_math(void) {
+    float alignas(32) f[8] = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0};
+    // log(exp(x)) = x
+    float_vector_exp(f, 8);
+    for (size_t i = 0; i < 8; i++) {
+        printf("%f\n", f[i]);
+    }
+    float_vector_log(f, 8);
+    for (size_t i = 0; i < 8; i++) {
+        printf("%f\n", f[i]);
+    }
+    for (size_t i = 0; i < 8; i++) {
+        ASSERT(fabs(f[i] - (float)i) < FLT_EPSILON);
+    }
+
+    PASS();
+}
+
 TEST test_vector_simd_math(void) {
     float alignas(32) f[8] = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0};
     simde__m256 vf = simde_mm256_load_ps(f);
@@ -114,8 +132,6 @@ TEST test_vector_simd_math(void) {
     simde_mm256_store_ps(exp_f, exp_i);
 
     for (int i = 0; i < sizeof(exp_f) / sizeof(float); i++) {
-        printf("exp_f[%d]: %f\n", i, exp_f[i]);
-        printf("f[%d]: %f\n", i, exp(f[i]));
         ASSERT(fabs(exp_f[i] - exp(f[i])) < 1e-4);
     }
 
@@ -129,6 +145,7 @@ int main(int argc, char **argv) {
     GREATEST_MAIN_BEGIN();      /* command-line options, initialization. */
 
     RUN_TEST(test_vector_math);
+    RUN_TEST(test_float32_math);
     RUN_TEST(test_vector_simd_math);
 
     GREATEST_MAIN_END();        /* display results */
