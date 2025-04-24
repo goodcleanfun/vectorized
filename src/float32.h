@@ -11,6 +11,7 @@
 #define VECTOR_TYPE float
 #define VECTOR_TYPE_ABS fabs
 #include "numeric.h"
+#include "simd_math.h"
 
 #ifndef OMP_PARALLEL_MIN_SIZE
 #define OMP_PARALLEL_MIN_SIZE_DEFINED
