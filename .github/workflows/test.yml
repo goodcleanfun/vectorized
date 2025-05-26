@@ -112,13 +112,6 @@ jobs:
       - name: Install curl
         run: |
           choco install curl -y
-      - name: Install MSYS2 and MinGW toolchain
-        uses: msys2/setup-msys2@v2
-        with:
-          update: true
-          install: >-
-            mingw-w64-x86_64-toolchain
-            mingw-w64-x86_64-gdb
       - name: Download clib deps
         run: |
           mkdir -p deps/greatest
@@ -150,8 +143,4 @@ jobs:
 
       - name: Build and Test with MinGW
         run: |
-          gcc -g -std=c11 -march=native -I src -I deps/ test.c -o test.exe -lm
-          echo "run" > commands.txt
-          echo "bt" >> commands.txt
-          echo "quit" >> commands.txt
-          gdb -batch -x commands.txt test.exe
+          make CC=gcc CFLAGS="-std=c11 -march=native" LDFLAGS="-lm" test
