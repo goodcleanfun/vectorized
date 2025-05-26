@@ -36,7 +36,7 @@ static inline void VECTOR_FUNC(zero)(VECTOR_TYPE *array, size_t n) {
     memset(array, 0, n * sizeof(VECTOR_TYPE));
 }
 
-static inline void VECTOR_FUNC(copy)(VECTOR_TYPE *dst, const VECTOR_TYPE *src, size_t n) {
+static inline void VECTOR_FUNC(copy)(VECTOR_TYPE * restrict dst, const VECTOR_TYPE * restrict src, size_t n) {
     memcpy(dst, src, n * sizeof(VECTOR_TYPE));
 }
 
