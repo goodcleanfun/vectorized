@@ -106,20 +106,19 @@ TEST test_vector_math(void) {
 }
 
 TEST test_float32_math(void) {
-    float alignas(32) f[8] = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0};
+    float *f = aligned_malloc(8 * sizeof(float), 32);
+    for (size_t i = 0; i < 8; i++) {
+        f[i] = (float)i;
+    }
+
     // log(exp(x)) = x
     float_vector_exp(f, 8);
-    for (size_t i = 0; i < 8; i++) {
-        printf("%f\n", f[i]);
-    }
     float_vector_log(f, 8);
-    for (size_t i = 0; i < 8; i++) {
-        printf("%f\n", f[i]);
-    }
     for (size_t i = 0; i < 8; i++) {
         ASSERT(fabs(f[i] - (float)i) < FLT_EPSILON);
     }
 
+    aligned_free(f);
     PASS();
 }
 
