@@ -109,6 +109,10 @@ jobs:
       - name: Verify GCC Version
         run: |
           gcc --version
+      - name: Dump CPU info
+        run: |
+          cat /proc/cpuinfo || systeminfo
+          gcc -dM -E - < /dev/null | grep -i avx
       - name: Install curl
         run: |
           choco install curl -y
