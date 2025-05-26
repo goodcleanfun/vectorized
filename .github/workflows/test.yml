@@ -109,13 +109,10 @@ jobs:
       - name: Verify GCC Version
         run: |
           gcc --version
-      - name: Dump CPU info
-        run: |
-          cat /proc/cpuinfo || systeminfo
-          gcc -dM -E - < /dev/null | grep -i avx
       - name: Install curl
         run: |
           choco install curl -y
+          choco install gdb -y
       - name: Download clib deps
         run: |
           mkdir -p deps/greatest
@@ -147,4 +144,8 @@ jobs:
 
       - name: Build and Test with MinGW
         run: |
-          make CC=gcc CFLAGS="-std=c11 -march=native" LDFLAGS="-lm" test
+          gcc -g -std=c11 -march=native -I src -I deps/ test.c -o test.exe -lm
+          echo "run" > commands.txt
+          echo "bt" >> commands.txt
+          echo "quit" >> commands.txt
+          gdb -batch -x commands.txt test.exe
