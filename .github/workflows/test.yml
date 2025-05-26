@@ -112,7 +112,13 @@ jobs:
       - name: Install curl
         run: |
           choco install curl -y
-          choco install gdb -y
+      - name: Install MSYS2 and MinGW toolchain
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          install: >-
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-gdb
       - name: Download clib deps
         run: |
           mkdir -p deps/greatest
