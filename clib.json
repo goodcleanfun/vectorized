@@ -13,14 +13,14 @@
     "silentbicycle/greatest": "*"
   },
   "src": [
-    "src/float32.h",
-    "src/float64.h",
-    "src/int32.h",
-    "src/int64.h",
+    "src/float_vector.h",
+    "src/double_vector.h",
+    "src/int32_vector.h",
+    "src/int64_vector.h",
     "src/nop.h",
     "src/numeric.h",
     "src/simd_math.h",
-    "src/uint32.h",
-    "src/uint64.h"
+    "src/uint32_vector.h",
+    "src/uint64_vector.h"
   ]
 }

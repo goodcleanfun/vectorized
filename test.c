@@ -14,7 +14,7 @@
 #undef VECTOR_TYPE_UNSIGNED
 
 #include "simd_math.h"
-#include "float32.h"
+#include "float_vector.h"
 
 TEST test_vector_math(void) {
     size_t n = 10;
@@ -105,7 +105,7 @@ TEST test_vector_math(void) {
     PASS();
 }
 
-TEST test_float32_math(void) {
+TEST test_float_math(void) {
     float *f = aligned_malloc(8 * sizeof(float), 32);
     for (size_t i = 0; i < 8; i++) {
         f[i] = (float)i;
@@ -144,7 +144,7 @@ int main(int argc, char **argv) {
     GREATEST_MAIN_BEGIN();      /* command-line options, initialization. */
 
     RUN_TEST(test_vector_math);
-    RUN_TEST(test_float32_math);
+    RUN_TEST(test_float_math);
     RUN_TEST(test_vector_simd_math);
 
     GREATEST_MAIN_END();        /* display results */
