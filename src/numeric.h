@@ -41,7 +41,7 @@ static inline void VECTOR_FUNC(copy)(VECTOR_TYPE * restrict dst, const VECTOR_TY
 }
 
 static inline void VECTOR_FUNC(set)(VECTOR_TYPE *array, VECTOR_TYPE value, size_t n) {
-    #pragma omp parallel for if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {
         array[i] = value;
     }
@@ -51,7 +51,7 @@ static inline VECTOR_TYPE VECTOR_FUNC(max)(VECTOR_TYPE *array, size_t n) {
     if (n < 1) return (VECTOR_TYPE) 0;
     VECTOR_TYPE val = array[0];
     VECTOR_TYPE max_val = val;
-    #pragma omp parallel for reduction(max:max_val) if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd reduction(max:max_val) if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 1; i < n; i++) {
         val = array[i];
         if (val > max_val) max_val = val;
@@ -63,7 +63,7 @@ static inline VECTOR_TYPE VECTOR_FUNC(min)(VECTOR_TYPE *array, size_t n) {
     if (n < 1) return (VECTOR_TYPE) 0;
     VECTOR_TYPE val = array[0];
     VECTOR_TYPE min_val = val;
-    #pragma omp parallel for reduction(min:min_val) if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd reduction(min:min_val) if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 1; i < n; i++) {
         val = array[i];
         if (val < min_val) min_val = val;
@@ -102,28 +102,28 @@ static inline int64_t VECTOR_FUNC(argmin)(VECTOR_TYPE *array, size_t n) {
 }
 
 static inline void VECTOR_FUNC(add)(VECTOR_TYPE *array, VECTOR_TYPE c, size_t n) {
-    #pragma omp parallel for if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {
         array[i] += c;
     }
 }
 
 static inline void VECTOR_FUNC(sub)(VECTOR_TYPE *array, VECTOR_TYPE c, size_t n) {
-    #pragma omp parallel for if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {
         array[i] -= c;
     }
 }
 
 static inline void VECTOR_FUNC(mul)(VECTOR_TYPE *array, VECTOR_TYPE c, size_t n) {
-    #pragma omp parallel for if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {
         array[i] *= c;
     }
 }
 
 static inline void VECTOR_FUNC(div)(VECTOR_TYPE *array, VECTOR_TYPE c, size_t n) {
-    #pragma omp parallel for if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {
         array[i] /= c;
     }
@@ -131,7 +131,7 @@ static inline void VECTOR_FUNC(div)(VECTOR_TYPE *array, VECTOR_TYPE c, size_t n)
 
 static inline VECTOR_TYPE VECTOR_FUNC(sum)(VECTOR_TYPE *array, size_t n) {
     VECTOR_TYPE result = 0;
-    #pragma omp parallel for reduction (+:result) if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd reduction (+:result) if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {
         result += array[i];
     }
@@ -140,7 +140,7 @@ static inline VECTOR_TYPE VECTOR_FUNC(sum)(VECTOR_TYPE *array, size_t n) {
 
 static inline VECTOR_TYPE_UNSIGNED VECTOR_FUNC(l1_norm)(VECTOR_TYPE *array, size_t n) {
     VECTOR_TYPE_UNSIGNED result = 0;
-    #pragma omp parallel for reduction (+:result) if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd reduction (+:result) if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {
         #ifdef VECTOR_TYPE_ABS
         result += VECTOR_TYPE_ABS(array[i]);
@@ -153,7 +153,7 @@ static inline VECTOR_TYPE_UNSIGNED VECTOR_FUNC(l1_norm)(VECTOR_TYPE *array, size
 
 static inline double VECTOR_FUNC(l2_norm)(VECTOR_TYPE *array, size_t n) {
     VECTOR_TYPE_UNSIGNED result = 0;
-    #pragma omp parallel for reduction (+:result) if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd reduction (+:result) if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {
         result += array[i] * array[i];
     }
@@ -162,7 +162,7 @@ static inline double VECTOR_FUNC(l2_norm)(VECTOR_TYPE *array, size_t n) {
 
 static inline VECTOR_TYPE_UNSIGNED VECTOR_FUNC(sum_sq)(VECTOR_TYPE *array, size_t n) {
     VECTOR_TYPE_UNSIGNED result = 0;
-    #pragma omp parallel for reduction (+:result) if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd reduction (+:result) if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {
         result += array[i] * array[i];
     }
@@ -177,7 +177,7 @@ static inline double VECTOR_FUNC(mean)(VECTOR_TYPE *array, size_t n) {
 static inline double VECTOR_FUNC(var)(VECTOR_TYPE *array, size_t n) {
     double mu = VECTOR_FUNC(mean)(array, n);
     double sigma2 = 0.0;
-    #pragma omp parallel for reduction (+:sigma2) if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd reduction (+:sigma2) if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {
         double dev = (double)array[i] - mu;
         sigma2 += dev * dev;
@@ -193,7 +193,7 @@ static inline double VECTOR_FUNC(std)(VECTOR_TYPE *array, size_t n) {
 static inline VECTOR_TYPE VECTOR_FUNC(product)(VECTOR_TYPE *array, size_t n) {
     if (n < 1) return (VECTOR_TYPE) 0;
     VECTOR_TYPE result = array[0];
-    #pragma omp parallel for reduction (*:result) if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd reduction (*:result) if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 1; i < n; i++) {
         result *= array[i];
     }
@@ -201,21 +201,21 @@ static inline VECTOR_TYPE VECTOR_FUNC(product)(VECTOR_TYPE *array, size_t n) {
 }
 
 static inline void VECTOR_FUNC(add_vector)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
-    #pragma omp parallel for if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {
         a1[i] += a2[i];
     }
 }
 
 static inline void VECTOR_FUNC(add_vector_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
-    #pragma omp parallel for if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {
         a1[i] += a2[i] * v;
     }
 }
 
 static inline void VECTOR_FUNC(sub_vector)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
-    #pragma omp parallel for if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {
         a1[i] -= a2[i];
     }
@@ -223,35 +223,35 @@ static inline void VECTOR_FUNC(sub_vector)(VECTOR_TYPE *a1, const VECTOR_TYPE *a
 
 
 static inline void VECTOR_FUNC(sub_vector_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
-    #pragma omp parallel for if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {
         a1[i] -= a2[i] * v;
     }
 }
 
 static inline void VECTOR_FUNC(mul_vector)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
-    #pragma omp parallel for if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {
         a1[i] *= a2[i];
     }
 }
 
 static inline void VECTOR_FUNC(mul_vector_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
-    #pragma omp parallel for if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {
         a1[i] *= a2[i] * v;
     }
 }
 
 static inline void VECTOR_FUNC(div_vector)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
-    #pragma omp parallel for if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {
         a1[i] /= a2[i];
     }
 }
 
 static inline void VECTOR_FUNC(div_vector_scaled)(VECTOR_TYPE *a1, const VECTOR_TYPE *a2, double v, size_t n) {
-    #pragma omp parallel for if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {
         a1[i] /= a2[i] * v;
     }
@@ -259,7 +259,7 @@ static inline void VECTOR_FUNC(div_vector_scaled)(VECTOR_TYPE *a1, const VECTOR_
 
 static inline VECTOR_TYPE VECTOR_FUNC(dot)(const VECTOR_TYPE *a1, const VECTOR_TYPE *a2, size_t n) {
     VECTOR_TYPE result = 0;
-    #pragma omp parallel for reduction (+:result) if (n > OMP_PARALLEL_MIN_SIZE)
+    #pragma omp parallel for simd reduction (+:result) if (n > OMP_PARALLEL_MIN_SIZE)
     for (size_t i = 0; i < n; i++) {
         result += a1[i] * a2[i];
     }
